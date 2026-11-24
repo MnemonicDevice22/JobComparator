@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Job Compare</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0D0D0D">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D0D0D;--ink:#EDE7DC;--mut:#837C72;--acc:#4AF08C;--card:#141414;--line:rgba(237,231,220,.12);--g:#4AF08C;--y:#F2C94C;--r:#F08A84}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overscroll-behavior:none}
+body{background:var(--bg);color:var(--ink);font:16px "Atkinson Hyperlegible",system-ui,-apple-system,sans-serif;display:flex;flex-direction:column}
+header{flex:none;padding:calc(env(safe-area-inset-top) + 12px) 16px 10px;border-bottom:1px solid var(--line);font-weight:700;font-size:18px;color:var(--acc)}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+nav{flex:none;display:flex;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:0;color:var(--mut);font:inherit;font-size:14px;padding:13px 0}
+nav button.on{color:var(--acc);font-weight:700;box-shadow:inset 0 2px var(--acc)}
+.bar{display:none;background:#4A1F1F;color:#FFD9D9;font-size:12px;padding:9px 14px;text-align:center}
+.bar.show{display:block}
+.pad{padding:12px 14px 24px}
+h3{font-size:15px;margin:22px 0 8px;color:var(--ink)}
+h3:first-child{margin-top:4px}
+.nt,.rg{font-size:12px;color:var(--mut);line-height:1.5;margin:6px 0}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.sw{font-size:13px;color:var(--mut);display:flex;gap:6px;align-items:center;margin-left:auto}
+.btn,.chip{background:none;border:1px solid var(--line);color:var(--ink);font:inherit;font-size:14px;padding:9px 14px;border-radius:10px}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#0D0D0D;font-weight:700}
+.btn.danger{border-color:#C46A6A;color:#E89999}
+.chip{padding:7px 12px;border-radius:999px;font-size:13px;color:var(--mut)}
+.chip.on{border-color:var(--acc);color:var(--acc)}
+.chips,.row{display:flex;flex-wrap:wrap;gap:8px}
+input,textarea{width:100%;background:#171717;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit}
+input:focus,textarea:focus{outline:none;border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:10px;overflow:hidden}
+.card.open{border-color:var(--acc)}
+.card.arch{opacity:.6}
+.ch{display:flex;align-items:center;gap:10px;padding:13px 14px}
+.cm{flex:1;min-width:0}
+.tt{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ms{font-size:12px;color:var(--mut);margin-top:2px}
+.sc{font-size:26px;font-weight:700;color:var(--mut)}
+.sc.pos{color:var(--g)}.sc.neg{color:var(--r)}
+.cb{padding:0 14px 14px;border-top:1px solid var(--line)}
+.lb{display:block;font-size:12px;color:var(--mut);margin:14px 0 6px}
+.g{--z:var(--g)}.y{--z:var(--y)}.r{--z:var(--r)}
+.zb{display:block;width:100%;text-align:left;background:#171717;color:var(--ink);font:inherit;font-size:15px;border:1px solid var(--line);border-left:6px solid var(--z);border-radius:10px;padding:9px 12px;margin-bottom:6px}
+.zb b{display:block;font-size:12px;color:var(--z);margin-bottom:1px}
+.zb.sel{outline:2px solid var(--z);outline-offset:1px}
+.mini{background:none;border:0;color:var(--mut);font:inherit;font-size:12px;text-decoration:underline;padding:2px 0}
+.orow{display:flex;gap:8px;margin-bottom:8px}
+.orow input:last-of-type{width:84px;flex:none}
+.x{background:none;border:1px solid var(--line);color:var(--mut);border-radius:10px;width:42px;flex:none;font-size:20px}
+.acts{display:flex;gap:8px;margin-top:16px}
+.prow{display:flex;gap:8px}
+.pt{flex:1;font-size:12px;color:var(--z)}
+.pt span{display:block;margin-bottom:4px}
+.tc{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}
+.tn{font-weight:700;margin-bottom:8px}
+.zl{display:block;font-size:12px;color:var(--z);margin-bottom:8px}
+.zl span{display:block;margin-bottom:3px}
+.zl input{border-left:6px solid var(--z)}
+.idea{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.idea.done{opacity:.5}
+.idea .im{font-size:11px;color:var(--mut);margin-top:6px}
+.rs{font-size:12px;color:var(--y);margin-top:3px}
+.ov{position:fixed;inset:0;z-index:20;background:rgba(5,5,5,.96);overflow-y:auto;padding:calc(env(safe-area-inset-top) + 20px) 18px 28px}
+.ov h3{margin-top:0;font-size:18px;color:var(--acc)}
+.empty{text-align:center;color:var(--mut);margin:40px auto;max-width:28ch;line-height:1.5}
+</style>
+</head>
+<body>
+<header id="title">Jobs</header>
+<div class="bar" id="warn"></div>
+<main id="main"></main>
+<nav id="tabs">
+<button data-t="jobs">Jobs</button>
+<button data-t="scale">Scale</button>
+<button data-t="settings">Settings</button>
+</nav>
+<script>
+(function(){
+"use strict";
+var KEY="jobcompare_data_v1",SCHEMA=1;
+var STAT=["Applied","Interviewing","Offer","Accepted","Rejected"];
+var ZN=[["g","Green"],["y","Yellow"],["r","Red"]];
+var ZL={g:"Green",y:"Yellow",r:"Red"};
+var TITLES={jobs:"Jobs",scale:"Scale",settings:"Settings"};
+var main=document.getElementById("main"),warn=document.getElementById("warn");
+var D,tab="jobs",open={},reopen={},showArch=false,ifilt="all",itype="Idea",ideaDraft="",np=null;
+
+function T(id,name,g,y,r){return{id:id,name:name,g:g,y:y,r:r}}
+function defaults(){return{schema:SCHEMA,app:"jobcompare",pts:{g:10,y:5,r:-10},traits:[
+T("t1","Salary (monthly, after tax, MXN)","$13,000 or more","$11,000 \u2013 $12,999","$9,600 \u2013 $10,999"),
+T("t2","Commute (per trip)","Up to 45 min, or home office","46 \u2013 80 min","Over 80 min"),
+T("t3","Days off","2 fixed days","1 fixed day","1 day, not fixed"),
+T("t4","Weekly hours","40 hours or less","41 \u2013 45 hours","Over 45 hours"),
+T("t5","Schedule","Early morning to afternoon","Middle of the day","Rotating shifts"),
+T("t6","Compatible activity","Tolerable","Mildly tolerable","Grating"),
+T("t7","Work environment","Calm","Mild","Chaotic"),
+T("t8","Pay frequency","Weekly","Biweekly","Other pay scheme")],jobs:[],ideas:[]}}
+function flash(m){warn.textContent=m;warn.classList.add("show")}
+function uid(){return"j-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,7)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function fmt(n){return(n>0?"+":n<0?"\u2212":"")+Math.abs(n)}
+function fix(){
+ var d=defaults();
+ D.pts=D.pts||d.pts;D.traits=D.traits&&D.traits.length?D.traits:d.traits;D.jobs=D.jobs||[];D.ideas=D.ideas||[];
+ D.jobs.forEach(function(j){j.picks=j.picks||{};j.others=j.others||[];j.notes=j.notes||"";j.title=j.title||"";j.status=j.status||"Applied";j.research=j.research||""})
+}
+
+/* storage */
+function load(){
+ var raw;
+ try{raw=localStorage.getItem(KEY)}catch(e){D=defaults();flash("Storage is blocked here. Nothing will persist.");return}
+ if(!raw){D=defaults();return}
+ try{D=JSON.parse(raw)}
+ catch(e){try{localStorage.setItem(KEY+"_bak",raw)}catch(x){}D=defaults();flash("Saved data could not be read. A copy was kept; export before adding more.")}
+}
+function save(){
+ var p=JSON.stringify(D);
+ try{localStorage.setItem(KEY,p);if(localStorage.getItem(KEY)!==p)throw 0;warn.classList.remove("show");return true}
+ catch(e){flash("Could not save. Export now before changing anything else.");return false}
+}
+
+/* scoring */
+function score(j){
+ var s=0;
+ D.traits.forEach(function(t){var p=j.picks[t.id];if(p)s+=D.pts[p]});
+ j.others.forEach(function(o){s+=Number(o.pts)||0});
+ return s;
+}
+function range(){
+ var v=[D.pts.g,D.pts.y,D.pts.r],n=D.traits.length;
+ return[n*Math.min.apply(null,v),n*Math.max.apply(null,v)];
+}
+function sclass(s){return"sc"+(s>0?" pos":s<0?" neg":"")}
+
+/* jobs tab */
+function zb(t,z,chosen){
+ return'<button class="zb '+z+(chosen?" sel":"")+'" data-a="'+(chosen?"re":"pick")+'" data-t="'+t.id+'" data-z="'+z+'"><b>'+ZL[z]+" "+fmt(D.pts[z])+"</b>"+esc(t[z]||"(not set)")+"</button>";
+}
+function card(j){
+ var o=open[j.id],s=score(j),n=D.traits.length,res=(j.research||"").trim();
+ var rated=D.traits.filter(function(t){return j.picks[t.id]}).length;
+ var h='<section class="card'+(o?" open":"")+(j.archived?" arch":"")+'" data-j="'+j.id+'"><div class="ch" data-a="tog"><div class="cm"><div class="tt">'+esc(j.title||"Untitled job")+'</div><div class="ms">'+j.status+(j.archived?" \u00b7 archived":"")+" \u00b7 "+rated+"/"+n+' rated</div><div class="rs"'+(res?" hidden":"")+'>Company research not added yet</div></div><div class="'+sclass(s)+'">'+fmt(s)+"</div></div>";
+ if(o){
+  h+='<div class="cb"><label class="lb">Job title</label><input data-f="title" value="'+esc(j.title)+'" placeholder="Company and position">';
+  h+='<label class="lb">Company research</label><textarea data-f="research" rows="4" placeholder="Look into the company before you commit: reviews, news, how long it has operated, what employees say.">'+esc(j.research)+"</textarea>";
+  h+='<label class="lb">Status</label><div class="chips">'+STAT.map(function(x){return'<button class="chip'+(x===j.status?" on":"")+'" data-a="stat" data-v="'+x+'">'+x+"</button>"}).join("")+"</div>";
+  D.traits.forEach(function(t){
+   var p=j.picks[t.id],re=reopen[j.id+t.id];
+   h+='<div class="lb">'+esc(t.name)+(p?"":" \u00b7 not rated yet")+"</div>";
+   if(p&&!re)h+=zb(t,p,true);
+   else{ZN.forEach(function(z){h+=zb(t,z[0],p===z[0])});if(p)h+='<button class="mini" data-a="clr" data-t="'+t.id+'">Clear</button>'}
+  });
+  h+='<div class="lb">Others (your own points, + or \u2212)</div>';
+  j.others.forEach(function(o2){h+='<div class="orow" data-o="'+o2.id+'"><input data-f="oname" value="'+esc(o2.name)+'" placeholder="e.g. Free meals"><input data-f="opts" type="number" value="'+(Number(o2.pts)||0)+'"><button class="x" data-a="odel">\u00d7</button></div>'});
+  h+='<button class="btn" data-a="oadd">+ Add Other</button>';
+  h+='<label class="lb">Notes</label><textarea data-f="notes" rows="3">'+esc(j.notes)+"</textarea>";
+  h+='<div class="acts"><button class="btn" data-a="arch">'+(j.archived?"Restore":"Archive")+'</button><button class="btn danger" data-a="del">Delete</button></div></div>';
+ }
+ return h+"</section>";
+}
+function rJobs(){
+ var r=range(),na=D.jobs.filter(function(j){return j.archived}).length;
+ var list=D.jobs.filter(function(j){return showArch||!j.archived});
+ var h='<div class="pad"><div class="top"><button class="btn pri" data-a="add">+ Add job</button><label class="sw"><input type="checkbox" id="sa"'+(showArch?" checked":"")+' style="width:auto"> Show archived ('+na+')</label></div>';
+ h+='<div class="rg" id="rg">Score range from the '+D.traits.length+" traits: "+fmt(r[0])+" to "+fmt(r[1])+". Others can shift it.</div>";
+ var nr=D.jobs.filter(function(j){return !j.archived&&!(j.research||"").trim()}).length;
+ if(nr)h+='<div class="rs">'+nr+" job"+(nr>1?"s":"")+" still need company research.</div>";
+ if(!list.length)h+='<div class="empty">No jobs yet. Tap <b>+ Add job</b> to score your first application.</div>';
+ list.forEach(function(j){h+=card(j)});
+ return h+"</div>";
+}
+
+/* scale tab */
+function rScale(){
+ var h='<div class="pad"><p class="nt">Points each zone adds to a job\u2019s score. Changing them re-scores every job. Zone wording is shared by all jobs.</p><div class="prow">';
+ ZN.forEach(function(z){h+='<label class="pt '+z[0]+'"><span>'+z[1]+'</span><input data-f="pt" data-z="'+z[0]+'" type="number" value="'+D.pts[z[0]]+'"></label>'});
+ h+="</div>";
+ D.traits.forEach(function(t){
+  h+='<div class="tc"><input class="tn" data-f="tn" data-t="'+t.id+'" value="'+esc(t.name)+'">';
+  ZN.forEach(function(z){h+='<label class="zl '+z[0]+'"><span>'+z[1]+'</span><input data-f="tz" data-t="'+t.id+'" data-z="'+z[0]+'" value="'+esc(t[z[0]])+'"></label>'});
+  h+="</div>";
+ });
+ return h+"</div>";
+}
+
+/* settings tab */
+function rSet(){
+ var h='<div class="pad"><h3>Data</h3><div class="row"><button class="btn" data-a="exp">Export JSON</button><button class="btn" data-a="cpy">Copy JSON</button><button class="btn" data-a="imp">Import JSON</button></div>';
+ h+='<p class="nt">Saved on this phone only. Import adds jobs and ideas that are missing, matched by ID; it never overwrites. Edits made on another device do not update existing jobs. Export from time to time.</p><input type="file" id="file" accept=".json,application/json" hidden>';
+ h+="<h3>Ideas and bugs for future versions</h3>";
+ h+='<div class="chips">'+["Idea","Bug"].map(function(x){return'<button class="chip'+(itype===x?" on":"")+'" data-a="itype" data-v="'+x+'">'+x+"</button>"}).join("")+"</div>";
+ h+='<textarea data-f="idea" rows="2" style="margin-top:8px" placeholder="Describe the idea or bug">'+esc(ideaDraft)+'</textarea><div class="row" style="margin-top:8px"><button class="btn pri" data-a="addidea">Add</button></div>';
+ h+='<div class="chips" style="margin-top:14px">'+[["all","All"],["Idea","Ideas"],["Bug","Bugs"]].map(function(x){return'<button class="chip'+(ifilt===x[0]?" on":"")+'" data-a="ifilt" data-v="'+x[0]+'">'+x[1]+"</button>"}).join("")+"</div>";
+ var items=D.ideas.filter(function(i){return ifilt==="all"||i.type===ifilt}).sort(function(a,b){return(a.done?1:0)-(b.done?1:0)||b.created_at-a.created_at});
+ if(!items.length)h+='<p class="nt">Nothing here yet.</p>';
+ items.forEach(function(i){h+='<div class="idea'+(i.done?" done":"")+'" data-i="'+i.id+'"><b>'+i.type+"</b> "+esc(i.text)+'<div class="im">'+new Date(i.created_at).toLocaleDateString()+(i.done?" \u00b7 done":"")+'</div><div class="row" style="margin-top:8px"><button class="chip" data-a="idone">'+(i.done?"Reopen":"Mark done")+'</button><button class="chip" data-a="idel">Delete</button></div></div>'});
+ h+="<h3>About</h3><p class=\"nt\">Each job is scored by tapping a zone for every trait: Green, Yellow or Red. Zones add the points set on the Scale tab, and your Others add their own. The total is saved automatically. Archive hides jobs that are no longer active. Jobs stay editable, so come back after each interview, or after starting, to rate what you could not judge before.</p></div>";
+ return h;
+}
+
+function ov(){
+ return'<div class="ov"><h3>New job application</h3><p class="nt">Researching a company before you work for it pays off. Note what you found: reviews, news, how long it has operated, what employees say. You can skip it now; the job will keep reminding you until you add research.</p><label class="lb">Job title</label><input data-f="ntitle" value="'+esc(np.title)+'" placeholder="Company and position"><label class="lb">Company research</label><textarea data-f="nres" rows="7" placeholder="What did you find out?">'+esc(np.res)+'</textarea><div class="acts"><button class="btn pri" data-a="nok">Add job</button><button class="btn" data-a="nskip">Skip research for now</button><button class="btn" data-a="ncancel">Cancel</button></div></div>';
+}
+/* render */
+function render(){
+ var st=main.scrollTop;
+ document.getElementById("title").textContent=TITLES[tab];
+ Array.prototype.forEach.call(document.querySelectorAll("nav button"),function(b){b.classList.toggle("on",b.dataset.t===tab)});
+ main.innerHTML=(tab==="jobs"?rJobs():tab==="scale"?rScale():rSet())+(np?ov():"");
+ main.scrollTop=st;
+}
+function upd(){
+ D.jobs.forEach(function(j){
+  var c=main.querySelector('.card[data-j="'+j.id+'"]');if(!c)return;
+  var s=score(j),e=c.querySelector(".sc");
+  e.textContent=fmt(s);e.className=sclass(s);
+  c.querySelector(".tt").textContent=j.title||"Untitled job";
+  var q=c.querySelector(".cm .rs");if(q)q.hidden=!!(j.research||"").trim();
+ });
+ var r=range(),g=document.getElementById("rg");
+ if(g)g.textContent="Score range from the "+D.traits.length+" traits: "+fmt(r[0])+" to "+fmt(r[1])+". Others can shift it.";
+}
+
+/* events */
+document.getElementById("tabs").addEventListener("click",function(e){
+ var b=e.target.closest("button");if(!b)return;
+ tab=b.dataset.t;main.scrollTop=0;render();
+});
+function bundle(){return JSON.stringify({schema:SCHEMA,app:"jobcompare",exported_at:new Date().toISOString(),pts:D.pts,traits:D.traits,jobs:D.jobs,ideas:D.ideas},null,2)}
+function merge(into,inc){
+ var have={},n=0;into.forEach(function(x){have[x.id]=1});
+ (inc||[]).forEach(function(x){if(x&&x.id&&!have[x.id]){into.push(x);have[x.id]=1;n++}});
+ return n;
+}
+main.addEventListener("click",function(e){
+ var b=e.target.closest("[data-a]");if(!b)return;
+ var a=b.dataset.a,c=b.closest(".card"),j=c&&D.jobs.find(function(x){return x.id===c.dataset.j}),t=b.dataset.t,v=b.dataset.v;
+ if(a==="add"){np={title:"",res:""};render();return}
+ if(a==="ncancel"){np=null;render();return}
+ if(a==="nok"||a==="nskip"){var id=uid();D.jobs.unshift({id:id,title:np.title.trim(),status:"Applied",archived:false,created_at:Date.now(),picks:{},others:[],notes:"",research:a==="nok"?np.res.trim():""});open[id]=true;np=null;save();render();return}
+ if(j){
+  if(a==="tog")open[j.id]=!open[j.id];
+  else if(a==="stat"){j.status=v;save()}
+  else if(a==="pick"){j.picks[t]=b.dataset.z;delete reopen[j.id+t];save()}
+  else if(a==="re")reopen[j.id+t]=true;
+  else if(a==="clr"){delete j.picks[t];delete reopen[j.id+t];save()}
+  else if(a==="oadd"){j.others.push({id:uid(),name:"",pts:0});save()}
+  else if(a==="odel"){var oid=b.closest(".orow").dataset.o;j.others=j.others.filter(function(x){return x.id!==oid});save()}
+  else if(a==="arch"){j.archived=!j.archived;save()}
+  else if(a==="del"){if(!confirm("Delete this job permanently?"))return;D.jobs=D.jobs.filter(function(x){return x!==j});save()}
+  render();return;
+ }
+ if(a==="itype"){itype=v;render()}
+ else if(a==="ifilt"){ifilt=v;render()}
+ else if(a==="addidea"){var tx=ideaDraft.trim();if(!tx)return;D.ideas.push({id:uid(),type:itype,text:tx,done:false,created_at:Date.now()});ideaDraft="";save();render()}
+ else if(a==="idone"||a==="idel"){
+  var iid=b.closest(".idea").dataset.i,it=D.ideas.find(function(x){return x.id===iid});if(!it)return;
+  if(a==="idone")it.done=!it.done;else{if(!confirm("Delete this entry permanently?"))return;D.ideas=D.ideas.filter(function(x){return x!==it})}
+  save();render();
+ }
+ else if(a==="exp"){
+  var bl=new Blob([bundle()],{type:"application/json"}),l=document.createElement("a");
+  l.href=URL.createObjectURL(bl);l.download="jobcompare-"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(l);l.click();setTimeout(function(){URL.revokeObjectURL(l.href);l.remove()},1000);
+ }
+ else if(a==="cpy"){
+  var txt=bundle();
+  if(navigator.clipboard)navigator.clipboard.writeText(txt).then(function(){flash("Copied to the clipboard.")},function(){window.prompt("Copy this:",txt)});
+  else window.prompt("Copy this:",txt);
+ }
+ else if(a==="imp")document.getElementById("file").click();
+});
+main.addEventListener("input",function(e){
+ var el=e.target,f=el.dataset.f;if(!f)return;
+ var v=el.value,c=el.closest(".card"),j=c&&D.jobs.find(function(x){return x.id===c.dataset.j});
+ var tr=el.dataset.t&&D.traits.find(function(x){return x.id===el.dataset.t});
+ if(f==="ntitle"){np.title=v;return}
+ else if(f==="nres"){np.res=v;return}
+ else if(f==="title")j.title=v;
+ else if(f==="notes")j.notes=v;
+ else if(f==="research")j.research=v;
+ else if(f==="oname"||f==="opts"){var o=j.others.find(function(x){return x.id===el.closest(".orow").dataset.o});if(f==="oname")o.name=v;else o.pts=Number(v)||0}
+ else if(f==="pt")D.pts[el.dataset.z]=Number(v)||0;
+ else if(f==="tn")tr.name=v;
+ else if(f==="tz")tr[el.dataset.z]=v;
+ else if(f==="idea"){ideaDraft=v;return}
+ if(j)j.edited_at=Date.now();
+ save();upd();
+});
+main.addEventListener("change",function(e){
+ if(e.target.id==="sa"){showArch=e.target.checked;render();return}
+ if(e.target.id==="file"){
+  var fl=e.target.files&&e.target.files[0];if(!fl)return;
+  var rd=new FileReader();
+  rd.onload=function(){
+   var inc;
+   try{inc=JSON.parse(rd.result)}catch(x){alert("That file could not be read as JSON.");return}
+   if(!inc||typeof inc!=="object"){alert("No data found in that file.");return}
+   var n=merge(D.jobs,inc.jobs)+merge(D.ideas,inc.ideas);
+   fix();save();render();alert("Added "+n+" new entr"+(n===1?"y":"ies")+".");
+  };
+  rd.readAsText(fl);e.target.value="";
+ }
+});
+
+/* boot */
+if(navigator.storage&&navigator.storage.persist){navigator.storage.persisted().then(function(ok){if(!ok)navigator.storage.persist()})}
+load();fix();render();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+})();
+</script>
+</body>
+</html>
